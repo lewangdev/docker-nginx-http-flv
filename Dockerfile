@@ -1,7 +1,7 @@
 FROM alpine:latest as builder
 
 ARG NGINX_VERSION=1.21.1
-ARG NGINX_RTMP_VERSION=1.2.2
+ARG NGINX_HTTP_FLV_VERSION=1.2.9
 
 
 RUN	apk update		&&	\
@@ -35,7 +35,7 @@ RUN	apk update		&&	\
 
 RUN	cd /tmp/									&&	\
 	curl --remote-name http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz			&&	\
-	git clone https://github.com/arut/nginx-rtmp-module.git -b v${NGINX_RTMP_VERSION}
+	git clone https://github.com/winshining/nginx-http-flv-module.git -b v${NGINX_HTTP_FLV_VERSION}
 
 RUN	cd /tmp										&&	\
 	tar xzf nginx-${NGINX_VERSION}.tar.gz						&&	\
@@ -43,12 +43,12 @@ RUN	cd /tmp										&&	\
 	./configure										\
 		--prefix=/opt/nginx								\
 		--with-http_ssl_module								\
-		--add-module=../nginx-rtmp-module					&&	\
+		--add-module=../nginx-http-flv-module					&&	\
 	make										&&	\
 	make install
 
 FROM alpine:latest
-LABEL org.opencontainers.image.authors="jason@jasonrivers.co.uk"
+LABEL org.opencontainers.image.authors="lewang.dev@gmail.com"
 RUN apk update		&& \
 	apk add			   \
 		openssl		   \
@@ -57,12 +57,13 @@ RUN apk update		&& \
 		pcre
 
 COPY --from=0 /opt/nginx /opt/nginx
-COPY --from=0 /tmp/nginx-rtmp-module/stat.xsl /opt/nginx/conf/stat.xsl
+COPY --from=0 /tmp/nginx-http-flv-module/stat.xsl /opt/nginx/conf/stat.xsl
 RUN rm /opt/nginx/conf/nginx.conf
-ADD run.sh /
+COPY nginx.conf /opt/nginx/conf/nginx.conf
+COPY docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 1935
 EXPOSE 8080
 
-CMD /run.sh
-
+CMD ["/opt/nginx/sbin/nginx", "-g", "daemon off;"]
