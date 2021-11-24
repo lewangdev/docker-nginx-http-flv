@@ -15,7 +15,21 @@ The configuration file is in /opt/nginx/conf/
 
 ## Running
 
+### Docker Container
+
 To run the container and bind the port 1935 to the host machine; run the following:
 ```
-docker run -p 1935:1935 -p 8080:8080 lewangdev/nginx-http-flv
+docker run -d -p 1935:1935 -p 8080:8080 lewangdev/nginx-http-flv
 ```
+
+### OBS
+
+Start streaming
+
+![OBS](https://github.com/lewangdev/docker-nginx-http-flv/blob/main/images/obs.png?raw=true)
+
+### flv.js
+
+Open the stream by localhost [flv.js](https://github.com/Bilibili/flv.js/)
+
+![flv.js](https://github.com/lewangdev/docker-nginx-http-flv/blob/main/images/flvjs.png?raw=true)
