@@ -11,7 +11,7 @@ This image exposes port 1935 for RTMP Steams and has 1 default channel named "li
 
 It also exposes 8080 so you can access `http://<your server ip>:8080/stat` to see the streaming statistics.
 
-The configuration file is in /opt/nginx/conf/
+The configuration file is in /opt/nginx/conf/, more configuration details can be found at [nginx-http-flv-module](https://github.com/winshining/nginx-http-flv-module/blob/master/README.md).
 
 ## Running
 
